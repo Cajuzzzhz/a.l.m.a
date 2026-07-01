@@ -24,3 +24,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@font-face {
+  font-family: '8bitOperator';
+  src: url('/fonts/8bitOperatorPlusSC-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+.font-pixel {
+  font-family: '8bitOperator', monospace;
+}
+
+.text-borda-cinza {
+  /* Cria a borda cinza ao redor do texto */
+  -webkit-text-stroke: 4px #555555;
+  color: white;
+  /* Um leve sombreamento para destacar mais do fundo */
+  text-shadow: 4px 4px 0px #000000;
+}
