@@ -1,74 +1,89 @@
 // src/lib/playtest-data.ts
 
-export interface Habilidade {
-  nome: string;
-  desc: string;
-}
+export type AtributoKey = "FOR" | "AGI" | "SAB" | "VIG" | "DET_MAG";
+
+export interface Habilidade { nome: string; desc: string; }
+export interface Ataque { nome: string; dano: string; aumento: string; acertoExtra: number; atributoAcerto: AtributoKey; }
+export interface Feitico { nome: string; niveis: { normal: string, avancado: string, dominado: string, violenta: string }; alcance: string; alvo: string; duracao: string; desc: string; }
+export interface Item { nome: string; desc: string; tipo: string; equipado?: boolean; isArma?: boolean; armaProps?: Ataque; }
 
 export interface Personagem {
   id: string;
   nome: string;
   titulo: string;
   cor: string;
+  nv: number;
+  lv: number;
   hpMax: number;
   tpMax: number;
+  defesaExtra: number;
+  deslocamento: string;
   estilo: string;
-  atributos: {
-    FOR: number;
-    AGI: number;
-    SAB: number;
-    VIG: number;
-    DET_MAG: number; // Determinação para humanos, Magia para monstros
-  };
-  equipamento: {
-    arma: {
-      nome: string;
-      dano: string;
-      aumento: "Adição" | "Passo" | "Fixo";
-      extra?: string;
-    };
-    armadura: string;
-  };
+  atributos: Record<AtributoKey, number>;
+  ataqueBase: Ataque;
+  feiticos: Feitico[];
+  inventario: Item[];
   habilidades: Habilidade[];
 }
 
 export const PLAYTEST_DATA: Record<string, Personagem> = {
   humano: {
     id: "humano",
-    nome: "Gabs",
+    nome: "FRISK",
     titulo: "A GAIOLA DESTEMIDA",
     cor: "#d97706",
-    hpMax: 36,
+    nv: 1,
+    lv: 1,
+    hpMax: 30,
     tpMax: 2,
-    estilo: "Agressivo / Resiliente",
+    defesaExtra: 0,
+    deslocamento: "9m",
+    estilo: "Combate agressivo de curta distância e alta resiliência física.",
     atributos: { FOR: 3, AGI: 2, SAB: 1, VIG: 3, DET_MAG: 1 },
-    equipamento: {
-      arma: { nome: "Luvas Fortes", dano: "1d6", aumento: "Adição", extra: "+1 dado de acerto" },
-      armadura: "Bandana Máscula"
-    },
+    ataqueBase: { nome: "DESARMADO", dano: "1d4", aumento: "ADIÇÃO", acertoExtra: 0, atributoAcerto: "FOR" },
+    feiticos: [],
+    inventario: [
+      { nome: "PEDAÇO DE NEVE", desc: "Restaura 2d4 de HP", tipo: "CONSUMÍVEL" },
+      { 
+        nome: "LUVA FORTE", desc: "Equipamento para as mãos. Usada para socar mais forte.", tipo: "EQUIPAMENTO",
+        equipado: true, isArma: true, armaProps: { nome: "LUVA FORTE", dano: "1d6", aumento: "ADIÇÃO", acertoExtra: 1, atributoAcerto: "FOR" }
+      }
+    ],
     habilidades: [
-      { nome: "Coração Destemido", desc: "Imune a medo. HP < 50% dá +1 dado em FOR." },
-      { nome: "Ataque Imprudente", desc: "Defesa vai a 0 para ganhar +2 dados de acerto." },
-      { nome: "Ação Direta", desc: "Usa FOR ou VIG no lugar de SAB em interações sociais." }
+      { nome: "CORAÇÃO DESTEMIDO", desc: "Você é imune a medo. Se seu HP cair abaixo de 50%, você ganha +1 dado em todas as rolagens de FORÇA." },
+      { nome: "ATAQUE IMPRUDENTE", desc: "Pode reduzir sua Defesa para 0 no turno para ganhar +2 dados de acerto no seu ataque." },
+      { nome: "AÇÃO DIRETA", desc: "Em situações sociais, ao usar FOR ou VIG para resolver conflitos, ganhe +1 dado na rolagem." }
     ]
   },
   monstro: {
     id: "monstro",
-    nome: "Ralsei (Conselheiro)",
-    titulo: "O MONSTRO CONSELHEIRO",
+    nome: "RALSEI",
+    titulo: "A GEADA FLAMEJANTE",
     cor: "#ffffff",
-    hpMax: 27,
-    tpMax: 5,
-    estilo: "Suporte / Mágico",
+    nv: 1,
+    lv: 1,
+    hpMax: 25,
+    tpMax: 4,
+    defesaExtra: 0,
+    deslocamento: "9m",
+    estilo: "Combate à distância com magia de gelo e de fogo.",
     atributos: { FOR: 1, AGI: 2, SAB: 3, VIG: 1, DET_MAG: 3 },
-    equipamento: {
-      arma: { nome: "Chamas Mágicas", dano: "1d4", aumento: "Adição", extra: "Ataque à distância" },
-      armadura: "Capa de Veludo"
-    },
+    ataqueBase: { nome: "DESARMADO", dano: "1d4", aumento: "ADIÇÃO", acertoExtra: 0, atributoAcerto: "FOR" },
+    feiticos: [
+      { 
+        nome: "ICE SHOCK", niveis: { normal: "1d6", avancado: "2d6", dominado: "3d6", violenta: "5d6" },
+        alcance: "CURTO", alvo: "1 SER", duracao: "INSTANTÂNEA", desc: "Você consegue criar gelo sem custo, gaste 1 TP para paralisar um inimigo por uma rodada." 
+      },
+      { 
+        nome: "FIRE SHOCK", niveis: { normal: "1d6", avancado: "2d6", dominado: "3d6", violenta: "5d6" },
+        alcance: "MÉDIO", alvo: "1 a 2 SERES", duracao: "INSTANTÂNEA", desc: "Você consegue criar chamas sem custo, gaste 1 TP para atingir dois inimigos de uma vez." 
+      }
+    ],
+    inventario: [
+      { nome: "DOCE MONSTRO", desc: "Restaura 10 de HP. Tem gosto de marshmallow não muito doce.", tipo: "CONSUMÍVEL" }
+    ],
     habilidades: [
-      { nome: "Chamas Mágicas", desc: "Ataque básico sem custo. 1 TP para atingir 2 alvos." },
-      { nome: "Aura Majestosa", desc: "+1 dado em AGIR para acalmar ou convencer." },
-      { nome: "Incorpóreo", desc: "+1 de Defesa passiva contra ataques físicos." }
+      { nome: "AURA IMPONENTE", desc: "Ganha +2 dados em AGIR para acalmar ou intimidar inimigos." }
     ]
   }
 };
