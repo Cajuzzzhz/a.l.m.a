@@ -4,7 +4,7 @@ export type AtributoKey = "FOR" | "AGI" | "SAB" | "VIG" | "DET_MAG";
 
 export interface Habilidade { nome: string; desc: string; }
 export interface Ataque { nome: string; dano: string; aumento: string; acertoExtra: number; atributoAcerto: AtributoKey; }
-export interface Feitico { nome: string; niveis: { normal: string, avancado: string, dominado: string, violenta: string }; alcance: string; alvo: string; duracao: string; desc: string; }
+export interface Feitico { nome: string; tipo: string; niveis: { normal: string, avancado: string, dominado: string, violenta: string }; alcance: string; alvo: string; duracao: string; desc: string; }
 export interface Item { nome: string; desc: string; tipo: string; equipado?: boolean; isArma?: boolean; armaProps?: Ataque; }
 
 export interface Personagem {
@@ -18,7 +18,6 @@ export interface Personagem {
   tpMax: number;
   defesaExtra: number;
   deslocamento: string;
-  estilo: string;
   atributos: Record<AtributoKey, number>;
   ataqueBase: Ataque;
   feiticos: Feitico[];
@@ -29,7 +28,7 @@ export interface Personagem {
 export const PLAYTEST_DATA: Record<string, Personagem> = {
   humano: {
     id: "humano",
-    nome: "FRISK",
+    nome: "Alice",
     titulo: "A GAIOLA DESTEMIDA",
     cor: "#d97706",
     nv: 1,
@@ -38,7 +37,6 @@ export const PLAYTEST_DATA: Record<string, Personagem> = {
     tpMax: 2,
     defesaExtra: 0,
     deslocamento: "9m",
-    estilo: "Combate agressivo de curta distância e alta resiliência física.",
     atributos: { FOR: 3, AGI: 2, SAB: 1, VIG: 3, DET_MAG: 1 },
     ataqueBase: { nome: "DESARMADO", dano: "1d4", aumento: "ADIÇÃO", acertoExtra: 0, atributoAcerto: "FOR" },
     feiticos: [],
@@ -57,7 +55,7 @@ export const PLAYTEST_DATA: Record<string, Personagem> = {
   },
   monstro: {
     id: "monstro",
-    nome: "RALSEI",
+    nome: "Elise",
     titulo: "A GEADA FLAMEJANTE",
     cor: "#ffffff",
     nv: 1,
@@ -66,17 +64,16 @@ export const PLAYTEST_DATA: Record<string, Personagem> = {
     tpMax: 4,
     defesaExtra: 0,
     deslocamento: "9m",
-    estilo: "Combate à distância com magia de gelo e de fogo.",
     atributos: { FOR: 1, AGI: 2, SAB: 3, VIG: 1, DET_MAG: 3 },
     ataqueBase: { nome: "DESARMADO", dano: "1d4", aumento: "ADIÇÃO", acertoExtra: 0, atributoAcerto: "FOR" },
     feiticos: [
       { 
-        nome: "ICE SHOCK", niveis: { normal: "1d6", avancado: "2d6", dominado: "3d6", violenta: "5d6" },
+        nome: "ICE SHOCK", tipo: "GELO", niveis: { normal: "1d6", avancado: "2d6", dominado: "3d6", violenta: "5d6" },
         alcance: "CURTO", alvo: "1 SER", duracao: "INSTANTÂNEA", desc: "Você consegue criar gelo sem custo, gaste 1 TP para paralisar um inimigo por uma rodada." 
       },
       { 
-        nome: "FIRE SHOCK", niveis: { normal: "1d6", avancado: "2d6", dominado: "3d6", violenta: "5d6" },
-        alcance: "MÉDIO", alvo: "1 a 2 SERES", duracao: "INSTANTÂNEA", desc: "Você consegue criar chamas sem custo, gaste 1 TP para atingir dois inimigos de uma vez." 
+        nome: "FIRE SHOCK", tipo: "FOGO", niveis: { normal: "1d6", avancado: "2d6", dominado: "3d6", violenta: "5d6" },
+        alcance: "MÉDIO", alvo: "1 SER", duracao: "INSTANTÂNEA", desc: "Você consegue criar chamas sem custo, gaste 1 TP para atingir dois inimigos de uma vez." 
       }
     ],
     inventario: [
