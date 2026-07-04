@@ -68,16 +68,17 @@ export const PLAYTEST_DATA: Record<string, Personagem> = {
     ataqueBase: { nome: "DESARMADO", dano: "1d4", aumento: "ADIÇÃO", acertoExtra: 0, atributoAcerto: "FOR" },
     feiticos: [
       { 
-        nome: "ICE SHOCK", tipo: "GELO", niveis: { normal: "1d6", avancado: "2d6", dominado: "3d6", violenta: "5d6" },
-        alcance: "CURTO", alvo: "1 SER", duracao: "INSTANTÂNEA", desc: "Você consegue criar gelo sem custo, gaste 1 TP para paralisar um inimigo por uma rodada." 
+        nome: "ICE SHOCK", tipo: "GELO", niveis: { normal: "1d8", avancado: "2d8", dominado: "3d8", violenta: "5d8" },
+        alcance: "CURTO", alvo: "1 SER", duracao: "INSTANTÂNEA", 
+        desc: "Gastando 1 TP, você congela o seu inimigo, causando 1d8 de dano e deixando ele lento por uma rodada. \nVocê pode gastar 2 TP adicionais para usar versões melhoradas, +2 de tp para cada versão. \nVersão Violentar requer LV 10" 
       },
       { 
-        nome: "FIRE SHOCK", tipo: "FOGO", niveis: { normal: "1d6", avancado: "2d6", dominado: "3d6", violenta: "5d6" },
-        alcance: "MÉDIO", alvo: "1 SER", duracao: "INSTANTÂNEA", desc: "Você consegue criar chamas sem custo, gaste 1 TP para atingir dois inimigos de uma vez." 
+        nome: "FIRE SHOCK", tipo: "FOGO", niveis: { normal: "1d10", avancado: "2d10", dominado: "3d10", violenta: "5d10" },
+        alcance: "MÉDIO", alvo: "1 SER", duracao: "INSTANTÂNEA", desc: "Gastando 1 TP, você incendeia o seu inimigo, causando 1d10 de dano. \nVocê pode gastar 2 TP adicionais para usar versões melhoradas, +2 de tp para cada versão. \nVersão Violentar requer LV 10" 
       }
     ],
     inventario: [
-      { nome: "DOCE MONSTRO", desc: "Restaura 10 de HP. Tem gosto de marshmallow não muito doce.", tipo: "CONSUMÍVEL" }
+      { nome: "DOCE MONSTRO", desc: "Restaura +10 HP. Tem gosto de marshmallow não muito doce.", tipo: "CONSUMÍVEL" }
     ],
     habilidades: [
       { nome: "AURA IMPONENTE", desc: "Ganha +2 dados em AGIR para acalmar ou intimidar inimigos." }
