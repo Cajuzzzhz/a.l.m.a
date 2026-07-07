@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 
@@ -76,6 +76,8 @@ export default function ReceptaculoScreen() {
   const [fase, setFase] = useState<"digitando" | "escolha">("digitando");
   const [textoDigitado, setTextoDigitado] = useState("");
   const [habilidadeAtiva, setHabilidadeAtiva] = useState<Habilidade | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
 
   const textoCompleto = "ESCOLHA UM RECEPTACULO.";
@@ -92,6 +94,34 @@ export default function ReceptaculoScreen() {
     }, 100);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    audioRef.current = new Audio("/audio/soul-shine.mp3");
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  const playSelectSfx = () => {
+    const audio = new Audio("/audio/select.mp3");
+    audio.volume = 0.5;
+    void audio.play().catch(() => undefined);
+  };
+
+  const iniciarTransicao = (tipo: "humano" | "monstro") => {
+    if (isTransitioning) return;
+
+    setIsTransitioning(true);
+
+    audioRef.current?.pause();
+    audioRef.current && (audioRef.current.currentTime = 0);
+    void audioRef.current?.play().catch(() => undefined);
+
+    window.setTimeout(() => {
+      router.push(`/ficha/${tipo}`);
+    }, 900);
+  };
 
   const infos = {
     humano: {
@@ -136,6 +166,19 @@ export default function ReceptaculoScreen() {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {isTransitioning && (
+          <motion.div
+            key="transition-curtain"
+            initial={{ opacity: 0, clipPath: "inset(0 50% 0 50%)" }}
+            animate={{ opacity: 1, clipPath: "inset(0 0 0 0)" }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-200 bg-white pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
+
       {/* FUNDO E POEIRA */}
       <AnimatePresence>
         {selecao !== "nenhuma" && (
@@ -170,8 +213,13 @@ export default function ReceptaculoScreen() {
                   filter: selecao === "humano" ? "drop-shadow(0 0 30px #ff7f00)" : "drop-shadow(0 0 5px #ff7f00)"
                 }}
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                className={`absolute ${selecao === "nenhuma" ? "cursor-pointer" : "pointer-events-none"}`}
-                onClick={() => selecao === "nenhuma" && setSelecao("humano")}
+                className={`absolute ${selecao === "nenhuma" && !isTransitioning ? "cursor-pointer" : "pointer-events-none"}`}
+                onClick={() => {
+                  if (selecao === "nenhuma" && !isTransitioning) {
+                    setSelecao("humano");
+                    playSelectSfx();
+                  }
+                }}
               >
                 <img src="/images/bravery.png" className="w-40 h-40 object-contain pixelated" />
               </motion.div>
@@ -187,10 +235,15 @@ export default function ReceptaculoScreen() {
                   filter: selecao === "monstro" ? "drop-shadow(0 0 30px #ffffff)" : "drop-shadow(0 0 5px #ffffff)"
                 }}
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                className={`absolute ${selecao === "nenhuma" ? "cursor-pointer" : "pointer-events-none"}`}
-                onClick={() => selecao === "nenhuma" && setSelecao("monstro")}
+                className={`absolute ${selecao === "nenhuma" && !isTransitioning ? "cursor-pointer" : "pointer-events-none"}`}
+                onClick={() => {
+                  if (selecao === "nenhuma" && !isTransitioning) {
+                    setSelecao("monstro");
+                    playSelectSfx();
+                  }
+                }}
               >
-                <img src="/images/monster.png" className="w-40 h-40 object-contain scale-[1.9] pixelated" />
+                <img src="/images/monster.png" className="w-40 h-40 object-contain pixelated" />
               </motion.div>
             </div>
           )}
@@ -230,9 +283,12 @@ export default function ReceptaculoScreen() {
                   </div>
                   <div className="flex gap-8 pt-4">
                     <button 
-                      onClick={() => setSelecao("nenhuma")}
+                      onClick={() => {
+                        setSelecao("nenhuma");
+                        playSelectSfx();
+                      }}
                     className="text-2xl hover:opacity-50 transition-opacity uppercase font-pixel" style={{ color: infos.humano.corPrimaria }}>Voltar</button>
-                    <button onClick={() => router.push("/ficha/humano")}
+                    <button onClick={() => iniciarTransicao("humano")}
                     className="text-2xl border-2 px-6 py-2 hover:bg-orange-600 hover:text-black transition-all uppercase font-pixel" style={{ color: infos.humano.corPrimaria, borderColor: infos.humano.corPrimaria }}>Confirmar</button>
                   </div>
                 </motion.div>
@@ -267,8 +323,11 @@ export default function ReceptaculoScreen() {
                     </div>
                   </div>
                   <div className="flex gap-8 pt-4 justify-end">
-                    <button onClick={() => setSelecao("nenhuma")} className="text-2xl hover:opacity-50 transition-opacity uppercase font-pixel">Voltar</button>
-                    <button onClick={() => router.push("/ficha/monstro")}
+                    <button onClick={() => {
+                      setSelecao("nenhuma");
+                      playSelectSfx();
+                    }} className="text-2xl hover:opacity-50 transition-opacity uppercase font-pixel">Voltar</button>
+                    <button onClick={() => iniciarTransicao("monstro")}
                     className="text-2xl border-2 border-white px-6 py-2 hover:bg-white hover:text-black transition-all uppercase font-pixel">Confirmar</button>
                   </div>
                 </motion.div>
