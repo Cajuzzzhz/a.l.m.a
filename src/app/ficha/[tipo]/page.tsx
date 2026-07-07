@@ -232,7 +232,7 @@ export default function FichaPage() {
         {/* ================= COLUNA 1: RETRATO E STATUS ================= */}
         <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.08, duration: 0.5 }} className="flex flex-col gap-4 lg:col-span-3">
           <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.12, duration: 0.45 }} className="border-4 border-white w-full aspect-square flex items-center justify-center bg-black relative p-6">
-            <img src={tipo === "humano" ? "/images/bravery.png" : "/images/monster.png"} className="w-full h-full object-contain pixelated" />
+            <img src={tipo === "humano" ? "/images/bravery.png" : "/images/monsterimg.png"} className="w-full h-full object-contain pixelated" />
             <button onClick={() => router.push("/")} className="absolute top-2 left-2 text-[10px] md:text-xs border border-white px-2 py-1 hover:bg-white hover:text-black bg-black">SAIR</button>
           </motion.div>
 
